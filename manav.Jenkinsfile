@@ -31,7 +31,8 @@ pipeline {
                 sh '''
                    echo "Running the test stage"
                    ls -la
-                   test -f build/m.html
+                   test -f build/index.html
+                   npm test
                    '''
             }
         }
