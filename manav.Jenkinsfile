@@ -31,8 +31,6 @@ pipeline {
                 sh '''
                    echo "Running the test stage"
                    ls -la 
-                   #comment
-                   //comment
                    test -f build/index.html
                    npm test
                    '''
