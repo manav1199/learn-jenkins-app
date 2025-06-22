@@ -4,7 +4,9 @@ pipeline {
     stages {
         stage('Initialising Workspace')
         {
-            cleanWs()
+            steps{
+                    cleanWs()
+            }
         }
         stage('Build')
         {
