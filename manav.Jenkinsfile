@@ -26,11 +26,11 @@ pipeline {
                     image 'node:18-alpine'
                     reuseNode true
                 }
-            }
+            } 
             steps{
                 sh '''
                    echo "Running the test stage"
-                   ls -la
+                   ls -la 
                    test -f build/index.html
                    npm test
                    '''
