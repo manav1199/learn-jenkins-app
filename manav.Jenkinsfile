@@ -14,6 +14,8 @@ pipeline {
                 sh '''
                    echo "Building inside docker container"
                    ls -la
+                   npm ci
+                   npm run build
                    '''
             }
         }
