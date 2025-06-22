@@ -2,13 +2,7 @@ pipeline {
     agent any
 
     stages {
-        stage('W/O Docker') {
-            steps {
-                sh 'echo "Jenkins without docker"'
-                sh 'touch without.txt'
-            }
-        }
-        stage('With Docker')
+        stage('Build')
         {
             agent{
                 docker{
@@ -17,9 +11,10 @@ pipeline {
                 }
             }
             steps{
-                sh 'echo "Jenkins with Docker"'
-                sh 'npm --version'
-                sh 'touch with.txt'
+                sh '''
+                   echo "Building inside docker container"
+                   ls -la
+                   '''
             }
         }
     }
