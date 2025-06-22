@@ -2,6 +2,10 @@ pipeline {
     agent any
 
     stages {
+        stage('Initialising Workspace')
+        {
+            cleanWs()
+        }
         stage('Build')
         {
             agent{
