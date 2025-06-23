@@ -6,12 +6,6 @@ pipeline {
     }
 
     stages {
-        stage('Initialize WS')
-        {
-            steps{
-                cleanWs()
-            }
-        }
         stage('Build')
         {
             agent{
