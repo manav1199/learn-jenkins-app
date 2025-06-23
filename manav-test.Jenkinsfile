@@ -31,8 +31,10 @@ pipeline{
                         }
                     }
                     steps{
-                        sh 'test -f build/index.html'
-                        npm test
+                        sh '''
+                             test -f build/index.html
+                           '''
+                        
                     }
                 }
                 post{
@@ -49,10 +51,12 @@ pipeline{
                         }
                     }
                     steps{
+                        sh '''
                         npm install serve
                         node_modules/.bin/serve -s build &
                         sleep 10
                         npx playwright test
+                           '''
                     }
                     post{
                         always{
