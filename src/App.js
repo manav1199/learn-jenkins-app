@@ -12,7 +12,7 @@ function App() {
           target="_blank"
           rel="noopener noreferrer"
         >
-          Hi Sakshi (Golu The Girl)
+          Hi Sakshi Golu The Girl
         </a>
       </header>
       <p>
