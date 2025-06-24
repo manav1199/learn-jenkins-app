@@ -95,7 +95,7 @@ pipeline {
         {
             steps{
                 echo "This is the manual approval stage"
-                timeout(time: 1,unit:'MINUTES')
+                timeout(time: 15,unit:'MINUTES')
                 {
                     input message:'Provide approval to deploy to Prod',ok:'Deploy to Prod'
                 }
