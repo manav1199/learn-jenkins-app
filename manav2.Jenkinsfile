@@ -73,29 +73,7 @@ pipeline {
 
             }
         }
-        stage('Deploy-Staging')
-        {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps{
-                sh '''
-                    npm install netlify-cli@20.1.1 node-jq
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to production Site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --json > deploy-staging.json
-                   '''
-                   script{
-                    env.STAGING_URL=sh(script:"node_modules/.bin/node-jq -r '.deploy_url' deploy-staging.json",returnStdout:true)
-                    echo "$env.STAGING_URL"
-                   }
-            }
-        }
-        stage('E2E Staging')
+        stage('Staging')
         {
             agent{
                 docker{
@@ -104,10 +82,16 @@ pipeline {
                     }
                 }
             environment{
-                CI_ENVIRONMENT_URL="${env.STAGING_URL}"
+                CI_ENVIRONMENT_URL="Will_be_Set"
                         } 
             steps{
                 sh '''
+                npm install netlify-cli@20.1.1 node-jq
+                node_modules/.bin/netlify --version
+                echo "Deploying to production Site ID: $NETLIFY_SITE_ID"
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build --json > deploy-staging.json 
+                CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-staging.json)               
                 npx playwright test --reporter=html
                     '''
                 }
@@ -127,26 +111,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy-Prod')
-        {
-            agent{
-                docker{
-                    image 'node:18-alpine'
-                    reuseNode true
-                }
-            }
-            steps{
-                sh '''
-                    npm install netlify-cli@20.1.1
-                    node_modules/.bin/netlify --version
-                    echo "Deploying to production Site ID: $NETLIFY_SITE_ID"
-                    node_modules/.bin/netlify status
-                    node_modules/.bin/netlify deploy --dir=build --prod
-                   '''
-            }
-        }
-
-        stage('E2E Prod')
+        stage('Prod')
         {
             agent{
                 docker{
@@ -159,6 +124,11 @@ pipeline {
                         } 
             steps{
                 sh '''
+                npm install netlify-cli@20.1.1
+                node_modules/.bin/netlify --version
+                echo "Deploying to production Site ID: $NETLIFY_SITE_ID"
+                node_modules/.bin/netlify status
+                node_modules/.bin/netlify deploy --dir=build --prod
                 npx playwright test --reporter=html
                     '''
                 }
