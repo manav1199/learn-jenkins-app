@@ -9,7 +9,9 @@ pipeline {
     stages {
         stage('Docker build')
         {
-            sh 'docker build -t my-playwright . --no-cache'
+            steps{
+                sh 'docker build -t my-playwright . --no-cache'
+            }
         }
         stage('Build')
         {
