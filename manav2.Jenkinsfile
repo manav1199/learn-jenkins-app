@@ -17,7 +17,7 @@ pipeline {
         {
             agent{
                 docker{
-                    image 'node:18-alpine'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -37,7 +37,7 @@ pipeline {
                     {
                         agent{
                             docker{
-                                image 'node:18-alpine'
+                                image 'my-playwright'
                                 reuseNode true
                             }
                         } 
@@ -97,7 +97,7 @@ pipeline {
                 echo "Deploying to production Site ID: $NETLIFY_SITE_ID"
                 netlify status
                 netlify deploy --dir=build --json > deploy-staging.json 
-                CI_ENVIRONMENT_URL=$(node_modules/.bin/node-jq -r '.deploy_url' deploy-staging.json)               
+                CI_ENVIRONMENT_URL=$(node-jq -r '.deploy_url' deploy-staging.json)               
                 npx playwright test --reporter=html
                     '''
                 }
