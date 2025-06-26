@@ -15,12 +15,17 @@ pipeline {
                     args "--entrypoint=''"
                 }
             }
+            environment{
+                AWS_S3_BUCKET='manav-jenkins'
+            }
             steps{
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) 
                 {
                 sh '''
                     aws --version
                     aws s3 ls
+                    echo "Hi Manav" >> test.html
+                    aws s3 cp test.html s3://$AWS_S3_BUCKET/test.html
                    '''
                 }
                 }
