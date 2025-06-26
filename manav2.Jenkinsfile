@@ -4,13 +4,6 @@ pipeline {
         NETLIFY_SITE_ID='bf33c59a-de5a-48c0-8235-4cc6dcf26141'
         NETLIFY_AUTH_TOKEN=credentials('netify-key')
         REACT_APP_VERSION="1.2.$BUILD_ID"
-        withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'pass', usernameVariable: 'user')]) 
-        {
-        AWS_SECRET_ACCESS_KEY="${pass}"
-        AWS_ACCESS_KEY_ID="${user}"
-        }
-        
-        
     }
 
     stages {
@@ -23,11 +16,14 @@ pipeline {
                 }
             }
             steps{
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) 
+                {
                 sh '''
                     aws --version
                     aws s3 ls
                    '''
-            }
+                }
+                }
         }
 
         stage('Docker build')
