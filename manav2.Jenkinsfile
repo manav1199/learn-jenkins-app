@@ -7,30 +7,6 @@ pipeline {
     }
 
     stages {
-        stage('AWS CLI')
-        {
-            agent{
-                docker{
-                    image 'amazon/aws-cli'
-                    args "--entrypoint=''"
-                }
-            }
-            environment{
-                AWS_S3_BUCKET='manav-jenkins'
-            }
-            steps{
-                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) 
-                {
-                sh '''
-                    aws --version
-                    aws s3 ls
-                    echo "Hi Manav" >> test.html
-                    aws s3 cp test.html s3://$AWS_S3_BUCKET/test.html
-                   '''
-                }
-                }
-        }
-
         stage('Docker build')
         {
             steps{
@@ -53,6 +29,29 @@ pipeline {
                    npm run build
                    '''
             }
+        }
+        stage('AWS DEPLOY')
+        {
+            agent{
+                docker{
+                    image 'amazon/aws-cli'
+                    args "--entrypoint=''"
+                    reuseNode true
+                }
+            }
+            environment{
+                AWS_S3_BUCKET='manav-jenkins'
+            }
+            steps{
+                withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) 
+                {
+                sh '''
+                    aws --version
+                    aws s3 ls
+                    aws s3 sync build s3://$AWS_S3_BUCKET
+                   '''
+                }
+                }
         }
         stage('Test')
         {
