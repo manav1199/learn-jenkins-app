@@ -5,7 +5,7 @@ pipeline {
     }
 
     stages {
-        stage('Docker build')
+        /*stage('Docker build')
         {
             steps{
                 sh 'docker build -t my-playwright . --no-cache'
@@ -27,7 +27,7 @@ pipeline {
                    npm run build
                    '''
             }
-        }
+        }*/
         stage('AWS DEPLOY')
         {
             agent{
@@ -37,16 +37,12 @@ pipeline {
                     reuseNode true
                 }
             }
-            environment{
-                AWS_S3_BUCKET='manav-jenkins'
-            }
             steps{
                 withCredentials([usernamePassword(credentialsId: 'my-aws', passwordVariable: 'AWS_SECRET_ACCESS_KEY', usernameVariable: 'AWS_ACCESS_KEY_ID')]) 
                 {
                 sh '''
                     aws --version
-                    aws s3 ls
-                    aws s3 sync build s3://$AWS_S3_BUCKET
+                    aws ecs register-task-definition --cli-input-json file://aws/task-definition.json
                    '''
                 }
                 }
