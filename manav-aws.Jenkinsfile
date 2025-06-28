@@ -34,7 +34,7 @@ pipeline {
             agent{
                 docker{
                     image 'amazon/aws-cli'
-                    args "--entrypoint=''"
+                    args "-u root --entrypoint=''"
                     reuseNode true
                 }
             }
@@ -43,8 +43,9 @@ pipeline {
                 {
                 sh '''
                     aws --version
-                    aws ecs register-task-definition --cli-input-json file://aws/task-definition.json
-                    aws ecs update-service --cluster manav-fargate-2 --service LearnJenkinsApp-TaskDefinition-Prod-service-cuxq4ejp --task-definition LearnJenkinsApp-TaskDefinition-Prod:2
+                    yum install jq
+                    LATEST_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition.json | jq '.taskDefinition.revision')
+                    aws ecs update-service --cluster manav-fargate-2 --service LearnJenkinsApp-TaskDefinition-Prod-service-cuxq4ejp --task-definition LearnJenkinsApp-TaskDefinition-Prod:$LATEST_REVISION
                    '''
                 }
                 }
