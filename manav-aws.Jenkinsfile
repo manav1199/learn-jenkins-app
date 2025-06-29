@@ -9,17 +9,11 @@ pipeline {
     }
 
     stages {
-        /*stage('Docker build')
-        {
-            steps{
-                sh 'docker build -t my-playwright . --no-cache'
-            }
-        }
         stage('Build')
         {
             agent{
                 docker{
-                    image 'my-playwright'
+                    image 'node:18-alpine'
                     reuseNode true
                 }
             }
@@ -29,9 +23,10 @@ pipeline {
                    ls -la
                    npm ci
                    npm run build
+                   docker build -t jenkins-app . --no-cache
                    '''
             }
-        }*/
+        }
         stage('AWS DEPLOY')
         {
             agent{
