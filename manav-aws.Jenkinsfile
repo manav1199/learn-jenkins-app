@@ -4,7 +4,7 @@ pipeline {
         REACT_APP_VERSION="1.2.$BUILD_ID"
         AWS_DEFAULT_REGION="ap-south-1"
         AWS_ECS_CLUSTER="manav-fargate-2"
-        AWS_ECS_SERVICE="LearnJenkinsApp-TaskDefinition-Prod-service-cuxq4ejp"
+        AWS_ECS_SERVICE="LearnJenkinsApp-TaskDefinition-Prod-service"
         AWS_ECS_TASK="LearnJenkinsApp-TaskDefinition-Prod"
         APP_NAME="jenkins-app"
         AWS_DOCKER_REGISTRY="554510949427.dkr.ecr.ap-south-1.amazonaws.com"
@@ -61,6 +61,7 @@ pipeline {
                 {
                 sh '''
                     aws --version
+                    sed -i "s/#TAG/$REACT_APP_VERSION/g" aws/task-definition.json
                     LATEST_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition.json | jq '.taskDefinition.revision')
                     aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK:$LATEST_REVISION
                     aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE
