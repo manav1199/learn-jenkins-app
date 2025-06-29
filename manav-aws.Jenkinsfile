@@ -13,7 +13,7 @@ pipeline {
         {
             agent{
                 docker{
-                    image 'node:18-alpine'
+                    image 'my-playwright'
                     reuseNode true
                 }
             }
@@ -23,7 +23,21 @@ pipeline {
                    ls -la
                    npm ci
                    npm run build
-                   docker build -t jenkins-app . --no-cache
+                   '''
+            }
+        }
+        stage('Build Docker Image')
+        {
+            agent{
+                docker{
+                    image 'my-aws-cli'
+                    args "-u root -v /var/run/docker.sock:/var/run/docker.sock --entrypoint=''"
+                    reuseNode true
+                }
+            }
+            steps{
+                sh '''
+                    docker build -t jenkins-app . --no-cache
                    '''
             }
         }
@@ -31,8 +45,8 @@ pipeline {
         {
             agent{
                 docker{
-                    image 'amazon/aws-cli'
-                    args "-u root --entrypoint=''"
+                    image 'my-aws-cli'
+                    args "--entrypoint=''"
                     reuseNode true
                 }
             }
@@ -41,7 +55,6 @@ pipeline {
                 {
                 sh '''
                     aws --version
-                    yum install jq -y
                     LATEST_REVISION=$(aws ecs register-task-definition --cli-input-json file://aws/task-definition.json | jq '.taskDefinition.revision')
                     aws ecs update-service --cluster $AWS_ECS_CLUSTER --service $AWS_ECS_SERVICE --task-definition $AWS_ECS_TASK:$LATEST_REVISION
                     aws ecs wait services-stable --cluster $AWS_ECS_CLUSTER --services $AWS_ECS_SERVICE
