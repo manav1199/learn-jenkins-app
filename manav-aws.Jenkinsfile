@@ -7,7 +7,7 @@ pipeline {
         AWS_ECS_SERVICE="LearnJenkinsApp-TaskDefinition-Prod-service-cuxq4ejp"
         AWS_ECS_TASK="LearnJenkinsApp-TaskDefinition-Prod"
         APP_NAME="jenkins-app"
-        AWS_DOCKER_REGISTRY="554510949427.dkr.ecr.us-east-1.amazonaws.com"
+        AWS_DOCKER_REGISTRY="554510949427.dkr.ecr.ap-south-1.amazonaws.com"
     }
 
     stages {
